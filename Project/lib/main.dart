@@ -1,115 +1,390 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 void main() {
-  runApp(const MyApp());
+  runApp(LoginApp());
+}
+class BookAppointmentScreen extends StatefulWidget {
+  @override
+  _BookAppointmentScreenState createState() => _BookAppointmentScreenState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
+  DateTime? _selectedDate;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      backgroundColor: Colors.blue, // Match the background color of other screens
+      appBar: AppBar(
+        title: Text('Book an Appointment'),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              'Book an Appointment',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Set text color to white
+              ),
+            ),
+          ),
+          Expanded(
+            child: CalendarCarousel(
+              onDayPressed: (DateTime date, List<dynamic> events) {
+                setState(() {
+                  _selectedDate = date;
+                });
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              readOnly: true,
+              controller: TextEditingController(
+                text: _selectedDate != null
+                    ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                    : '',
+              ),
+              decoration: InputDecoration(
+                labelText: 'Selected Date',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          SizedBox(height: 20), // Add some spacing before the button
+          ElevatedButton(
+            onPressed: () {
+              // Add logic for checking availability
+            },
+            child: Text('Check Availability'),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class LoginApp extends StatelessWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login Page',
+      theme: ThemeData(
+        primaryColor: Colors.blue[900], // Set the primary color to navy blue
+      ),
+      home: LoginPage(),
+    );
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class LoginPage extends StatelessWidget {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Colors.blue, // Set the background color of the Scaffold to blue
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20.0),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Welcome to ImmuniDose!',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white, // Set the text color to white
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Image.asset(
+                'assets/logo.png',
+                width: 200,
+                height: 200,
+              ),
+              SizedBox(height: 20.0), // Add some spacing below the image
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white, // Set the background color of the text field to white
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white, // Set the background color of the text field to white
+                ),
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  _login(context);
+                },
+                child: Text('Login'),
+              ),
+              SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateAccountPage()),
+                  );
+                },
+                child: Text('Create Account'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _login(BuildContext context) {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    // Hardcoded values for username and password
+    const validUsername = 'username';
+    const validPassword = 'password';
+
+    if (username == validUsername && password == validPassword) {
+      // Navigate to welcome screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomeScreen(username: username)),
+      );
+    } else {
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text('Incorrect username or password. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+}
+
+
+  Map<String, dynamic>? _loadUserData() {
+    try {
+      final file = File('user_data.json');
+      if (file.existsSync()) {
+        final jsonData = file.readAsStringSync();
+        return jsonDecode(jsonData);
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
+    return null;
+  }
+
+
+class WelcomeScreen extends StatelessWidget {
+  final String username;
+
+  WelcomeScreen({required this.username});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue, // Set the background color of the Scaffold to blue
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Welcome'),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+          children: [
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              'Welcome $username',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BookAppointmentScreen()),
+                );
+              },
+              child: Text('Book an Appointment'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Add logic for viewing appointments
+              },
+              child: Text('View My Appointments'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class CreateAccountPage extends StatefulWidget {
+  @override
+  _CreateAccountPageState createState() => _CreateAccountPageState();
+}
+
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _hintAnswerController = TextEditingController();
+  bool _accountCreated = false;
+
+  void _createAccount(BuildContext context) async {
+    final userData = {
+      'username': _usernameController.text,
+      'password': _passwordController.text,
+      'email': _emailController.text,
+      'hintAnswer': _hintAnswerController.text,
+    };
+
+    try {
+      final file = File('user_data.json');
+      await file.writeAsString(jsonEncode(userData));
+      setState(() {
+        _accountCreated = true;
+      });
+      // Display success message for a few seconds
+      await Future.delayed(Duration(seconds: 2));
+      // Navigate back to login page after account creation
+      Navigator.pop(context);
+    } catch (e) {
+      print('Error creating account: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue, // Match the background color of the login screen
+      appBar: AppBar(
+        title: Text('Create an Account'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white, // Set the background color of the text field to white
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white, // Set the background color of the text field to white
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white, // Set the background color of the text field to white
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Password hint:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+                      TextField(
+                        controller: _hintAnswerController,
+                        decoration: InputDecoration(
+                          labelText: 'Answer',
+                          border: OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.white, // Set the background color of the text field to white
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                _createAccount(context);
+              },
+              child: Text('Create Account'),
+            ),
+            SizedBox(height: 10.0),
+            _accountCreated
+                ? Text(
+              'Account successfully created!',
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+                : SizedBox(),
+          ],
+        ),
+      ),
     );
   }
 }
