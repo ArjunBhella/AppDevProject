@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/SQLite/sqlite.dart';
 import 'package:project/views/MyAppointmentsPage.dart';
+
 class BookingConfirmationPage extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;
@@ -57,7 +58,7 @@ class BookingConfirmationPage extends StatelessWidget {
     );
   }
 
-  void _confirmBooking(BuildContext context) async {
+  Future<void> _confirmBooking(BuildContext context) async {
     if (appointmentNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please enter an appointment name")),
@@ -65,7 +66,19 @@ class BookingConfirmationPage extends StatelessWidget {
       return;
     }
 
-    // Use DatabaseHelper to save the appointment
+    // Check if the selected date and time are already booked
+    final isBooked = await DatabaseHelper().isTimeSlotBooked(
+      "${selectedDate.toString().substring(0, 10)} at $selectedTime",
+    );
+
+    if (isBooked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("This time slot is already booked. Please choose another.")),
+      );
+      return;
+    }
+
+    // If not booked, proceed with booking
     await DatabaseHelper().addAppointment(
       userName,
       appointmentNameController.text,
@@ -79,3 +92,4 @@ class BookingConfirmationPage extends StatelessWidget {
     );
   }
 }
+

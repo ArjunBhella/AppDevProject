@@ -109,5 +109,15 @@ class DatabaseHelper {
       whereArgs: [appointmentId],
     );
   }
+  Future<bool> isTimeSlotBooked(String time) async {
+    final db = await initDB();
+    final count = Sqflite.firstIntValue(await db.rawQuery(
+      'SELECT COUNT(*) FROM appointments WHERE date = ?',
+      [time],
+    ));
+    // Add a null check before performing the comparison
+    return count != null && count > 0;
+  }
+
 }
 
