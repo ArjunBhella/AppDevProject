@@ -29,7 +29,10 @@ Widget build(BuildContext context) {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context)=> BookAppointmentScreen()));
+                MaterialPageRoute(
+                  builder: (context) => BookAppointmentScreen(userName: username),
+                ),
+              );
             },
             child: Text('Book an Appointment'),
           ),

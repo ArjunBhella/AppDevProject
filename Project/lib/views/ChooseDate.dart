@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
-import 'package:project/views/BookAppointment.dart'; // Make sure this import matches the location of your BookAppointmentPage file
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:project/views/BookAppointment.dart';
 
 class BookAppointmentScreen extends StatefulWidget {
+  final String userName;
+  final DateTime? initialDate; // Making initialDate optional
+
+  const BookAppointmentScreen({Key? key, required this.userName, this.initialDate}) : super(key: key);
+
   @override
   _BookAppointmentScreenState createState() => _BookAppointmentScreenState();
 }
@@ -62,22 +67,33 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: ElevatedButton(
-              onPressed: _selectedDate == null ? null : () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => BookAppointmentPage(initialDate: _selectedDate),
-                  ),
-                );
-              },
+              onPressed: _selectedDate == null ? null : _navigateToAppointmentPage,
               child: Text('Check Availability'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                foregroundColor: MaterialStateProperty.all(Colors.lightBlue),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.lightBlue,
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _navigateToAppointmentPage() {
+    if (_selectedDate != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BookAppointmentPage(
+            initialDate: _selectedDate!,
+            userName: widget.userName,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select a date before proceeding.")),
+      );
+    }
   }
 }

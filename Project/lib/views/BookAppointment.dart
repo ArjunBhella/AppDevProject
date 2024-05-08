@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-
+import 'package:project/SQLite/sqlite.dart'; // Make sure this import points to your DatabaseHelper file
+import 'package:project/views/BookingConfimationPage.dart';
 class BookAppointmentPage extends StatefulWidget {
-  final DateTime? initialDate;
+  final String userName;  // Assuming the username is passed to this page
+  final DateTime initialDate; // Adding initialDate as a required parameter
 
-  const BookAppointmentPage({Key? key, this.initialDate}) : super(key: key);
+  BookAppointmentPage({Key? key, required this.userName, required this.initialDate}) : super(key: key);
 
   @override
   _BookAppointmentPageState createState() => _BookAppointmentPageState();
 }
 
 class _BookAppointmentPageState extends State<BookAppointmentPage> {
+  List<String> timeSlots = [];
   String? selectedTime;
-  final List<String> timeSlots = [
-    '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM',
-    '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM',
-    '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
-    '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM',
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTimeSlots();
+  }
+
+  Future<void> _loadTimeSlots() async {
+    timeSlots = await DatabaseHelper().getTimeSlots();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,116 +32,41 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       appBar: AppBar(
         title: Text('Select Time Slot'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              'Date: ${widget.initialDate?.toString().substring(0, 10) ?? 'None selected'}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 2.0,
-              ),
-              itemCount: timeSlots.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedTime = timeSlots[index];
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: selectedTime == timeSlots[index] ? Colors.blue : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        timeSlots[index],
-                        style: TextStyle(color: selectedTime == timeSlots[index] ? Colors.white : Colors.black),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          if (selectedTime != null)
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Selected Time: $selectedTime',
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _confirmAndBookAppointment(context),
-                    child: Text('Book Appointment'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.green),
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
+      body: timeSlots.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+        itemCount: timeSlots.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(timeSlots[index]),
+            onTap: () {
+              setState(() {
+                selectedTime = timeSlots[index];
+              });
+              _navigateToConfirmation();
+            },
+          );
+        },
       ),
     );
   }
 
-  void _confirmAndBookAppointment(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Booking"),
-          content: Text("Are you sure you want to book an appointment on ${widget.initialDate!.toString().substring(0, 10)} at $selectedTime?"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text("Confirm"),
-              onPressed: () {
-                Navigator.of(context).pop();  // Close the dialog
-                _showBookingSuccess(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showBookingSuccess(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Booking Successful"),
-          content: Text("Your appointment has been booked successfully!"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            ),
-          ],
-        );
-      },
-    );
+  void _navigateToConfirmation() {
+    if (selectedTime != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BookingConfirmationPage(
+            selectedDate: widget.initialDate, // Using initialDate from the widget
+            selectedTime: selectedTime!,
+            userName: widget.userName,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select a time slot before confirming."))
+      );
+    }
   }
 }
-
-
-
 
