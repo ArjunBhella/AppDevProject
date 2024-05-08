@@ -11,21 +11,27 @@ class DatabaseHelper {
 
     return openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute(users);
-      await db.execute(createAppointmentsTable);
+      await db.execute(createAppointmentsTable); // Create appointments table
       await db.execute(createTimeSlotsTable);
       await _populateInitialTimeSlots(db);
     }, onOpen: (db) async {
-      // Ensure that the "time_slots" table exists
+      // Ensure that the "appointments" table exists
       final List<Map<String, dynamic>> tables = await db
           .query('sqlite_master', where: 'type = ?', whereArgs: ['table']);
       final List<String> tableNames =
       tables.map((table) => table['name'] as String).toList();
+      if (!tableNames.contains('appointments')) { // Check if appointments table exists
+        await db.execute(createAppointmentsTable); // Create appointments table if not exists
+      }
+
+      // Ensure that the "time_slots" table exists
       if (!tableNames.contains('time_slots')) {
         await db.execute(createTimeSlotsTable);
         await _populateInitialTimeSlots(db);
       }
     });
   }
+
 
 
   final String users =
