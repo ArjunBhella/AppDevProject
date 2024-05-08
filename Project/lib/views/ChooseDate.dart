@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
+import 'package:project/views/BookAppointment.dart'; // Make sure this import matches the location of your BookAppointmentPage file
 
 class BookAppointmentScreen extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
-              'Book an Appointment',
+              'Select a Date',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -37,38 +38,43 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   _selectedDate = date;
                 });
               },
+              thisMonthDayBorderColor: Colors.grey,
               headerTextStyle: TextStyle(color: Colors.white),
               nextMonthDayBorderColor: Colors.white,
-              weekendTextStyle: TextStyle(color: Colors.white), // Weekends text color
-              weekdayTextStyle: TextStyle(color: Colors.white), // Weekdays text color
-              todayTextStyle: TextStyle(color: Colors.white), // Today's text color
-              selectedDayTextStyle: TextStyle(color: Colors.black), // Selected day text color
-              selectedDayButtonColor: Colors.white, // Selected day button color
-              selectedDayBorderColor: Colors.white, // Selected day border color
+              weekendTextStyle: TextStyle(color: Colors.white),
+              weekdayTextStyle: TextStyle(color: Colors.white),
+              todayTextStyle: TextStyle(color: Colors.white),
+              selectedDayTextStyle: TextStyle(color: Colors.black),
+              selectedDayButtonColor: Colors.white,
+              selectedDayBorderColor: Colors.white,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              readOnly: true,
-              controller: TextEditingController(
-                text: _selectedDate != null
-                    ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                    : '',
-              ),
-              decoration: InputDecoration(
-
-                labelText: 'Selected Date',
-                border: OutlineInputBorder(),
+            child: Text(
+              'Selected Date: ${_selectedDate?.toString().substring(0, 10) ?? 'None'}',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
               ),
             ),
           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // Add logic for checking availability
-            },
-            child: Text('Check Availability'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: ElevatedButton(
+              onPressed: _selectedDate == null ? null : () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BookAppointmentPage(initialDate: _selectedDate),
+                  ),
+                );
+              },
+              child: Text('Check Availability'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                foregroundColor: MaterialStateProperty.all(Colors.lightBlue),
+              ),
+            ),
           ),
         ],
       ),
