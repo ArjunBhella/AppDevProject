@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project/SQLite/sqlite.dart'; // Import the DatabaseHelper
+import 'package:project/SQLite/sqlite.dart';
+import 'package:project/views/DeleteAppointmentPage.dart';
 
 class MyAppointmentsPage extends StatefulWidget {
   final String userName;
@@ -45,6 +46,22 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
                 return ListTile(
                   title: Text(appointment['appointment_name'] ?? ''),
                   subtitle: Text(appointment['date'] ?? ''),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DeleteAppointmentPage(
+                            appointmentId: appointment['appointment_id'],
+                            appointmentName: appointment['appointment_name'],
+                            appointmentDate: appointment['date'],
+                            username: widget.userName,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );

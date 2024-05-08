@@ -101,4 +101,13 @@ class DatabaseHelper {
       throw Exception("Error fetching time slots: $e");
     }
   }
+  Future<int> deleteAppointment(int? appointmentId) async {
+    final db = await initDB();
+    return await db.delete(
+      'appointments',
+      where: 'appointment_id = ?',
+      whereArgs: [appointmentId],
+    );
+  }
 }
+
