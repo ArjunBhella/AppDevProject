@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/views/ChooseDate.dart';
-import 'package:project/views/MyAppointmentsPage.dart'; // Import the MyAppointmentsPage
+import 'package:project/views/MyAppointmentsPage.dart';
+import 'package:project/views/DoctorsPage.dart'; // Import the DoctorsPage
 
 class WelcomeScreen extends StatelessWidget {
   final String username;
@@ -10,7 +11,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue, // Set the background color of the Scaffold to blue
+      backgroundColor: Colors.lightBlue,
       appBar: AppBar(
         title: Text('Welcome'),
       ),
@@ -40,7 +41,6 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Navigate to the MyAppointmentsPage
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => MyAppointmentsPage(userName: username),
@@ -49,10 +49,23 @@ class WelcomeScreen extends StatelessWidget {
               },
               child: Text('View My Appointments'),
             ),
+            SizedBox(height: 20), // Add some space between the buttons
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the DoctorsPage
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DoctorsPage(), // Assuming DoctorsPage does not require a username
+                  ),
+                );
+              },
+              child: Text('View Doctors'),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 
