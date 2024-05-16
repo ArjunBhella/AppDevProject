@@ -32,8 +32,6 @@ class DatabaseHelper {
     });
   }
 
-
-
   final String users =
       "CREATE TABLE users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT UNIQUE, password TEXT, email TEXT, hint TEXT)";
 
@@ -101,6 +99,7 @@ class DatabaseHelper {
       throw Exception("Error fetching time slots: $e");
     }
   }
+
   Future<int> deleteAppointment(int? appointmentId) async {
     final db = await initDB();
     return await db.delete(
@@ -109,6 +108,7 @@ class DatabaseHelper {
       whereArgs: [appointmentId],
     );
   }
+
   Future<bool> isTimeSlotBooked(String time) async {
     final db = await initDB();
     final count = Sqflite.firstIntValue(await db.rawQuery(
@@ -119,5 +119,29 @@ class DatabaseHelper {
     return count != null && count > 0;
   }
 
-}
+  // New method to search for a user by username
+  Future<Users?> getUserByUsername(String username) async {
+    final db = await initDB();
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      where: 'user_name = ?',
+      whereArgs: [username],
+    );
 
+    if (result.isNotEmpty) {
+      return Users.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
+  Future<int> updateUser(Users user) async {
+    final db = await initDB();
+    return await db.update(
+      'users',
+      user.toMap(),
+      where: 'user_name = ?',
+      whereArgs: [user.userName],
+    );
+  }
+
+}
