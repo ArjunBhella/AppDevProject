@@ -119,7 +119,6 @@ class DatabaseHelper {
     return count != null && count > 0;
   }
 
-  // New method to search for a user by username
   Future<Users?> getUserByUsername(String username) async {
     final db = await initDB();
     final List<Map<String, dynamic>> result = await db.query(
@@ -134,14 +133,22 @@ class DatabaseHelper {
       return null;
     }
   }
+
   Future<int> updateUser(Users user) async {
     final db = await initDB();
-    return await db.update(
+    print("Attempting to update user: ${user.userName}");
+    int result = await db.update(
       'users',
-      user.toMap(),
+      {
+        'user_name': user.userName,
+        'password': user.password,
+        'email': user.email,
+        'hint': user.hint,
+      },
       where: 'user_name = ?',
       whereArgs: [user.userName],
     );
+    print("Update result: $result");
+    return result;
   }
-
 }

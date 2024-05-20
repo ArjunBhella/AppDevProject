@@ -4,6 +4,7 @@ import 'package:project/views/MyAppointmentsPage.dart';
 import 'package:project/views/DoctorsPage.dart';
 import '../Models/users.dart'; // Import your Users model
 import 'package:project/SQLite/sqlite.dart';
+import 'ManageProfile.dart'; // Import the new ManageProfile screen
 
 class WelcomeScreen extends StatefulWidget {
   final String username;
@@ -32,10 +33,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       _isLoading = false;
     });
   }
+
   void _editProfile() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => EditProfileScreen(user: _user),
+        builder: (context) => ManageProfileScreen(user: _user),
       ),
     );
   }
@@ -209,82 +211,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-class EditProfileScreen extends StatefulWidget {
-  final Users? user;
-
-  EditProfileScreen({this.user});
-
-  @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
-}
-
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _emailController;
-  late TextEditingController _hintController;
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController(text: widget.user?.email);
-    _hintController = TextEditingController(text: widget.user?.hint);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profile'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _hintController,
-                decoration: InputDecoration(labelText: 'Hint'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your hint';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
+              Spacer(),
               ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final updatedUser = Users(
-                      userName: widget.user!.userName,
-                      password: widget.user!.password,
-                      email: _emailController.text,
-                      hint: _hintController.text,
-                    );
-                    final dbHelper = DatabaseHelper();
-                    await dbHelper.updateUser(updatedUser);
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text('Save Changes'),
+                onPressed: _editProfile,
+                child: Text('Manage Profile'),
               ),
             ],
           ),
