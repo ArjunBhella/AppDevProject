@@ -33,42 +33,63 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Select a Doctor'),
+        backgroundColor: Colors.teal,
       ),
-      body: FutureBuilder<List<Doctor>>(
-        future: futureDoctors,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Doctor> doctors = snapshot.data!;
-            return ListView.builder(
-              itemCount: doctors.length,
-              itemBuilder: (context, index) {
-                Doctor doctor = doctors[index];
-                return ListTile(
-                  title: Text(doctor.name),
-                  subtitle: Text(doctor.specialization),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(doctor.image),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => BookingConfirmationPage(
-                          selectedDate: widget.selectedDate,
-                          selectedTime: widget.selectedTime,
-                          userName: widget.userName,
-                          selectedDoctor: doctor,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<List<Doctor>>(
+          future: futureDoctors,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<Doctor> doctors = snapshot.data!;
+              return ListView.builder(
+                itemCount: doctors.length,
+                itemBuilder: (context, index) {
+                  Doctor doctor = doctors[index];
+                  return Card(
+                    elevation: 3,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(
+                        doctor.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+                      subtitle: Text(
+                        doctor.specialization,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(doctor.image),
+                      ),
+                      trailing: Icon(Icons.arrow_forward, color: Colors.teal),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BookingConfirmationPage(
+                              selectedDate: widget.selectedDate,
+                              selectedTime: widget.selectedTime,
+                              userName: widget.userName,
+                              selectedDoctor: doctor,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }

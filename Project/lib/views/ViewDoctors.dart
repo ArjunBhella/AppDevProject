@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:project/Models/Doctor.dart';
 import 'package:project/Models/DoctorService.dart';
@@ -23,6 +22,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Doctors'),
+        backgroundColor: Colors.teal,
       ),
       body: FutureBuilder<List<Doctor>>(
         future: futureDoctors,
@@ -55,6 +55,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: Colors.teal,
                         ),
                       ),
                       Text(
@@ -70,9 +71,9 @@ class _DoctorsPageState extends State<DoctorsPage> {
               },
             );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red)));
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator(color: Colors.deepPurple));
         },
       ),
     );

@@ -29,6 +29,7 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('My Appointments'),
+        backgroundColor: Colors.teal,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _futureAppointments,
@@ -43,24 +44,34 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
               itemCount: appointments.length,
               itemBuilder: (context, index) {
                 final appointment = appointments[index];
-                return ListTile(
-                  title: Text(appointment['appointment_name'] ?? ''),
-                  subtitle: Text(appointment['date'] ?? ''),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DeleteAppointmentPage(
-                            appointmentId: appointment['appointment_id'],
-                            appointmentName: appointment['appointment_name'],
-                            appointmentDate: appointment['date'],
-                            username: widget.userName,
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      appointment['appointment_name'] ?? '',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(appointment['date'] ?? ''),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeleteAppointmentPage(
+                              appointmentId: appointment['appointment_id'],
+                              appointmentName: appointment['appointment_name'],
+                              appointmentDate: appointment['date'],
+                              username: widget.userName,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 );
               },
@@ -73,3 +84,4 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
     );
   }
 }
+

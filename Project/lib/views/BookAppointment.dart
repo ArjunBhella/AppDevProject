@@ -32,22 +32,58 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Select Time Slot'),
+        backgroundColor: Colors.teal,
       ),
-      body: timeSlots.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: timeSlots.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(timeSlots[index]),
-            onTap: () {
-              setState(() {
-                selectedTime = timeSlots[index];
-              });
-              _navigateToDoctorSelection();
-            },
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Available Time Slots',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: timeSlots.isEmpty
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                itemCount: timeSlots.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    elevation: 3,
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      title: Text(
+                        timeSlots[index],
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          selectedTime = timeSlots[index];
+                        });
+                        _navigateToDoctorSelection();
+                      },
+                      trailing: selectedTime == timeSlots[index]
+                          ? Icon(Icons.check_circle, color: Colors.teal)
+                          : null,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: selectedTime != null ? _navigateToDoctorSelection : null,
+        label: Text('Next'),
+        icon: Icon(Icons.arrow_forward),
+        backgroundColor: selectedTime != null ? Colors.teal : Colors.grey,
       ),
     );
   }
@@ -65,8 +101,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select a time slot before confirming.")));
+        SnackBar(content: Text("Please select a time slot before proceeding.")),
+      );
     }
   }
 }
-

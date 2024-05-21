@@ -12,6 +12,7 @@ class AppointmentDeletedPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Appointment Deleted'),
+        backgroundColor: Colors.teal,
       ),
       body: Center(
         child: Column(
@@ -22,6 +23,7 @@ class AppointmentDeletedPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.teal,
               ),
             ),
             SizedBox(height: 30),
@@ -33,6 +35,10 @@ class AppointmentDeletedPage extends StatelessWidget {
                 );
               },
               child: Text('View Your Appointments'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // background color
+                foregroundColor: Colors.white, // text color
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -43,6 +49,10 @@ class AppointmentDeletedPage extends StatelessWidget {
                 );
               },
               child: Text('Home'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // background color
+                foregroundColor: Colors.white, // text color
+              ),
             ),
           ],
         ),

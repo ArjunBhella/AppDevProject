@@ -24,6 +24,7 @@ class BookingConfirmationPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Booking Confirmation"),
+        backgroundColor: Colors.teal,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -31,36 +32,53 @@ class BookingConfirmationPage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Date: ${selectedDate.toString().substring(0, 10)} at $selectedTime",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Date: ${selectedDate.toString().substring(0, 10)} at $selectedTime",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Doctor: ${selectedDoctor.name}",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: appointmentNameController,
+                  decoration: InputDecoration(
+                    labelText: "Enter a name for the appointment",
+                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(color: Colors.teal),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.teal),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => _confirmBooking(context),
+                    child: Text('Confirm'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            Text(
-              "Doctor: ${selectedDoctor.name}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: appointmentNameController,
-              decoration: InputDecoration(
-                labelText: "Enter a name for the appointment",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _confirmBooking(context),
-              child: Text('Confirm'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -102,4 +120,7 @@ class BookingConfirmationPage extends StatelessWidget {
     );
   }
 }
+
+
+
 

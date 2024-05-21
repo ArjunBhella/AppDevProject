@@ -46,9 +46,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.teal,
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.teal,
         elevation: 0,
         title: Text('Profile'),
       ),
@@ -58,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.lightBlue,
+                color: Colors.teal,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     radius: 45,
                     child: Icon(
                       Icons.person,
-                      color: Colors.lightBlue,
+                      color: Colors.teal,
                       size: 80,
                     ),
                   ),
@@ -148,7 +148,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     radius: 50,
                     child: Icon(
                       Icons.person,
-                      color: Colors.lightBlue,
+                      color: Colors.teal,
                       size: 80,
                     ),
                   ),
@@ -194,7 +194,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.lightBlue,
+                            color: Colors.teal,
                           ),
                         ),
                         SizedBox(height: 5),
@@ -211,7 +211,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.lightBlue,
+                            color: Colors.teal,
                           ),
                         ),
                         SizedBox(height: 5),
