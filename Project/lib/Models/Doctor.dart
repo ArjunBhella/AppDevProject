@@ -28,4 +28,29 @@ class Doctor {
       image: json['image'],
     );
   }
+
+  factory Doctor.fromMap(Map<String, dynamic> map) {
+    return Doctor(
+      id: map['id'],
+      name: map['name'],
+      specialization: map['specialization'],
+      location: map['location'],
+      rating: map['rating'].toDouble(),
+      reviews: map['reviews'],
+      image: map['image'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'specialization': specialization,
+      'location': location,
+      'rating': rating,
+      'reviews': reviews,
+      'image': image,
+    };
+  }
 }
+

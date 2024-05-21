@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/views/ChooseDate.dart';
 import 'package:project/views/MyAppointmentsPage.dart';
-import 'package:project/views/DoctorsPage.dart';
+import 'package:project/views/ViewDoctors.dart'; // Import ViewDoctorsPage
 import '../Models/users.dart';
 import 'package:project/SQLite/sqlite.dart';
 import 'ManageProfile.dart';
@@ -112,7 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => DoctorsPage(),
+                    builder: (context) => DoctorsPage(), // Navigate to ViewDoctorsPage
                   ),
                 );
               },
@@ -243,7 +243,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -251,3 +250,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 }
+
+
+

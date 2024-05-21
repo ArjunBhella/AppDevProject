@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/SQLite/sqlite.dart';
-import 'package:project/views/BookingConfimationPage.dart';
+import 'package:project/views/DoctorsPage.dart';
+
 class BookAppointmentPage extends StatefulWidget {
   final String userName;
   final DateTime initialDate;
@@ -43,7 +44,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               setState(() {
                 selectedTime = timeSlots[index];
               });
-              _navigateToConfirmation();
+              _navigateToDoctorSelection();
             },
           );
         },
@@ -51,11 +52,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     );
   }
 
-  void _navigateToConfirmation() {
+  void _navigateToDoctorSelection() {
     if (selectedTime != null) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => BookingConfirmationPage(
+          builder: (context) => DoctorSelectionPage(
             selectedDate: widget.initialDate,
             selectedTime: selectedTime!,
             userName: widget.userName,
@@ -64,8 +65,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select a time slot before confirming."))
-      );
+          SnackBar(content: Text("Please select a time slot before confirming.")));
     }
   }
 }

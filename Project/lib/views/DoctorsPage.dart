@@ -1,14 +1,24 @@
-
 import 'package:flutter/material.dart';
 import 'package:project/Models/Doctor.dart';
 import 'package:project/Models/DoctorService.dart';
+import 'package:project/views/BookingConfimationPage.dart';
 
-class DoctorsPage extends StatefulWidget {
+class DoctorSelectionPage extends StatefulWidget {
+  final DateTime selectedDate;
+  final String selectedTime;
+  final String userName;
+
+  DoctorSelectionPage({
+    required this.selectedDate,
+    required this.selectedTime,
+    required this.userName,
+  });
+
   @override
-  _DoctorsPageState createState() => _DoctorsPageState();
+  _DoctorSelectionPageState createState() => _DoctorSelectionPageState();
 }
 
-class _DoctorsPageState extends State<DoctorsPage> {
+class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
   final DoctorService doctorService = DoctorService();
   late Future<List<Doctor>> futureDoctors;
 
@@ -22,59 +32,45 @@ class _DoctorsPageState extends State<DoctorsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Doctors'),
+        title: Text('Select a Doctor'),
       ),
       body: FutureBuilder<List<Doctor>>(
         future: futureDoctors,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Doctor> doctors = snapshot.data!;
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
+            return ListView.builder(
               itemCount: doctors.length,
               itemBuilder: (context, index) {
                 Doctor doctor = doctors[index];
-                return Card(
-                  elevation: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(height: 10),
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(doctor.image),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        doctor.name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        doctor.specialization,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
+                return ListTile(
+                  title: Text(doctor.name),
+                  subtitle: Text(doctor.specialization),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(doctor.image),
                   ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => BookingConfirmationPage(
+                          selectedDate: widget.selectedDate,
+                          selectedTime: widget.selectedTime,
+                          userName: widget.userName,
+                          selectedDoctor: doctor,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
 }
+

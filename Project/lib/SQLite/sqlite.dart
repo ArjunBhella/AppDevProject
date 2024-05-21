@@ -1,7 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../Models/users.dart';
-
+import '../Models/DoctorService.dart';
+import '../Models/Doctor.dart';
 class DatabaseHelper {
   final String databaseName = "ImmuniDose.db";
 
@@ -9,25 +10,14 @@ class DatabaseHelper {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, databaseName);
 
-    return openDatabase(path, version: 1, onCreate: (db, version) async {
+    return openDatabase(path, version: 2, onCreate: (db, version) async {
       await db.execute(users);
       await db.execute(createAppointmentsTable); // Create appointments table
       await db.execute(createTimeSlotsTable);
       await _populateInitialTimeSlots(db);
-    }, onOpen: (db) async {
-      // Ensure that the "appointments" table exists
-      final List<Map<String, dynamic>> tables = await db
-          .query('sqlite_master', where: 'type = ?', whereArgs: ['table']);
-      final List<String> tableNames =
-      tables.map((table) => table['name'] as String).toList();
-      if (!tableNames.contains('appointments')) { // Check if appointments table exists
-        await db.execute(createAppointmentsTable); // Create appointments table if not exists
-      }
-
-      // Ensure that the "time_slots" table exists
-      if (!tableNames.contains('time_slots')) {
-        await db.execute(createTimeSlotsTable);
-        await _populateInitialTimeSlots(db);
+    }, onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await db.execute("ALTER TABLE appointments ADD COLUMN doctor_id INTEGER;");
       }
     });
   }
@@ -41,6 +31,7 @@ class DatabaseHelper {
       user_name TEXT,
       appointment_name TEXT,
       date TEXT,
+      doctor_id INTEGER,
       FOREIGN KEY (user_name) REFERENCES users (user_name)
     )""";
 
@@ -71,12 +62,13 @@ class DatabaseHelper {
     return db.insert('users', user.toMap());
   }
 
-  Future<int> addAppointment(String userName, String appointmentName, String date) async {
+  Future<int> addAppointment(String userName, String appointmentName, String date, int doctorId) async {
     final db = await initDB();
     return await db.insert('appointments', {
       'user_name': userName,
       'appointment_name': appointmentName,
       'date': date,
+      'doctor_id': doctorId,
     });
   }
 
@@ -109,11 +101,11 @@ class DatabaseHelper {
     );
   }
 
-  Future<bool> isTimeSlotBooked(String time) async {
+  Future<bool> isTimeSlotBookedForDoctor(String time, int doctorId) async {
     final db = await initDB();
     final count = Sqflite.firstIntValue(await db.rawQuery(
-      'SELECT COUNT(*) FROM appointments WHERE date = ?',
-      [time],
+      'SELECT COUNT(*) FROM appointments WHERE date = ? AND doctor_id = ?',
+      [time, doctorId],
     ));
     // Add a null check before performing the comparison
     return count != null && count > 0;

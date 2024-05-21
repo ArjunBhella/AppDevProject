@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:project/SQLite/sqlite.dart';
 import 'package:project/views/MyAppointmentsPage.dart';
+import '../Models/Doctor.dart';
 
 class BookingConfirmationPage extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;
   final String userName;
+  final Doctor selectedDoctor;
 
   BookingConfirmationPage({
     Key? key,
     required this.selectedDate,
     required this.selectedTime,
     required this.userName,
+    required this.selectedDoctor,
   }) : super(key: key);
 
   final TextEditingController appointmentNameController = TextEditingController();
@@ -33,6 +36,11 @@ class BookingConfirmationPage extends StatelessWidget {
           children: <Widget>[
             Text(
               "Date: ${selectedDate.toString().substring(0, 10)} at $selectedTime",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Doctor: ${selectedDoctor.name}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
@@ -66,14 +74,15 @@ class BookingConfirmationPage extends StatelessWidget {
       return;
     }
 
-    // Check if the selected date and time are already booked
-    final isBooked = await DatabaseHelper().isTimeSlotBooked(
+    // Check if the selected date and time are already booked with the same doctor
+    final isBooked = await DatabaseHelper().isTimeSlotBookedForDoctor(
       "${selectedDate.toString().substring(0, 10)} at $selectedTime",
+      selectedDoctor.id,
     );
 
     if (isBooked) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("This time slot is already booked. Please choose another.")),
+        SnackBar(content: Text("This time slot is already booked for the selected doctor. Please choose another.")),
       );
       return;
     }
@@ -83,6 +92,7 @@ class BookingConfirmationPage extends StatelessWidget {
       userName,
       appointmentNameController.text,
       "${selectedDate.toString().substring(0, 10)} at $selectedTime",
+      selectedDoctor.id, // Save the selected doctor's ID
     );
 
     // Navigate to the appointments page
