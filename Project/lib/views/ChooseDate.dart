@@ -4,7 +4,7 @@ import 'package:project/views/BookAppointment.dart';
 
 class BookAppointmentScreen extends StatefulWidget {
   final String userName;
-  final DateTime? initialDate; // Making initialDate optional
+  final DateTime? initialDate;
 
   const BookAppointmentScreen({Key? key, required this.userName, this.initialDate}) : super(key: key);
 

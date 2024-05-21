@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project/SQLite/sqlite.dart'; // Make sure this import points to your DatabaseHelper file
+import 'package:project/SQLite/sqlite.dart';
 import 'package:project/views/BookingConfimationPage.dart';
 class BookAppointmentPage extends StatefulWidget {
-  final String userName;  // Assuming the username is passed to this page
-  final DateTime initialDate; // Adding initialDate as a required parameter
+  final String userName;
+  final DateTime initialDate;
 
   BookAppointmentPage({Key? key, required this.userName, required this.initialDate}) : super(key: key);
 
@@ -56,7 +56,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => BookingConfirmationPage(
-            selectedDate: widget.initialDate, // Using initialDate from the widget
+            selectedDate: widget.initialDate,
             selectedTime: selectedTime!,
             userName: widget.userName,
           ),

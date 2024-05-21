@@ -151,4 +151,19 @@ class DatabaseHelper {
     print("Update result: $result");
     return result;
   }
+  Future<String?> getHintByUsername(String username) async {
+    final db = await initDB();
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      columns: ['hint'],
+      where: 'user_name = ?',
+      whereArgs: [username],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first['hint'] as String?;
+    } else {
+      return null;
+    }
+  }
 }

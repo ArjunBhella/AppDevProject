@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:project/views/ChooseDate.dart';
 import 'package:project/views/MyAppointmentsPage.dart';
 import 'package:project/views/DoctorsPage.dart';
-import '../Models/users.dart'; // Import your Users model
+import '../Models/users.dart';
 import 'package:project/SQLite/sqlite.dart';
-import 'ManageProfile.dart'; // Import the new ManageProfile screen
+import 'ManageProfile.dart';
+import 'Login.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final String username;
@@ -116,6 +117,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => LoginApp(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -125,9 +137,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           child: _isLoading
               ? CircularProgressIndicator()
               : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 50),
               Row(
                 children: [
                   CircleAvatar(
@@ -164,58 +177,73 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ],
               ),
               SizedBox(height: 30),
-              Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Email:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.lightBlue,
+              Container(
+                width: 300,
+                child: Card(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Email:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.lightBlue,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        _user?.email ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+                        SizedBox(height: 5),
+                        Text(
+                          _user?.email ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Hint:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.lightBlue,
+                        SizedBox(height: 20),
+                        Text(
+                          'Hint:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.lightBlue,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        _user?.hint ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+                        SizedBox(height: 5),
+                        Text(
+                          _user?.hint ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: _editProfile,
-                child: Text('Manage Profile'),
+              SizedBox(height: 30),
+              Container(
+                height: 60,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                  onPressed: _editProfile,
+                  child: Text(
+                    'Manage Profile',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ),
+
             ],
           ),
         ),

@@ -31,10 +31,10 @@ class _DoctorsPageState extends State<DoctorsPage> {
             List<Doctor> doctors = snapshot.data!;
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of columns
-                childAspectRatio: 0.75, // Ratio of the cards
-                crossAxisSpacing: 10, // Horizontal space between cards
-                mainAxisSpacing: 10, // Vertical space between cards
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
               itemCount: doctors.length,
               itemBuilder: (context, index) {
